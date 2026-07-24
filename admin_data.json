@@ -1,0 +1,125 @@
+{
+  "ics": [
+    "IC001",
+    "IC002",
+    "IC003",
+    "IC004",
+    "IC005",
+    "IC006",
+    "IC007",
+    "IC008",
+    "IC009",
+    "IC010",
+    "IC011",
+    "IC012",
+    "IC013",
+    "IC014",
+    "IC015",
+    "IC016",
+    "IC017",
+    "IC018",
+    "IC019",
+    "IC020",
+    "IC021",
+    "IC022",
+    "IC023",
+    "IC024",
+    "IC025"
+  ],
+  "verticals": [
+    "Civil",
+    "Design",
+    "Electrical",
+    "Engineering",
+    "Finance",
+    "HR",
+    "Instrumentation",
+    "IT",
+    "Logistics",
+    "Maintenance",
+    "Manufacturing",
+    "Mechanical",
+    "Operations",
+    "Piping",
+    "Planning",
+    "Procurement",
+    "Production",
+    "Projects",
+    "Quality",
+    "Safety"
+  ],
+  "jobs": [
+    {
+      "ic": [
+        "IC002"
+      ],
+      "vertical": [
+        "Safety"
+      ],
+      "jobCode": 101,
+      "jobName": "Pipe Installation"
+    },
+    {
+      "ic": [
+        "IC003"
+      ],
+      "vertical": [
+        "Quality"
+      ],
+      "jobCode": 102,
+      "jobName": "Welding Inspection"
+    },
+    {
+      "ic": [
+        "IC001"
+      ],
+      "vertical": [
+        "Design"
+      ],
+      "jobCode": 6667,
+      "jobName": "up"
+    }
+  ],
+  "users": [
+    {
+      "ic": [
+        "IC002"
+      ],
+      "email": "john.doe@safety.com"
+    },
+    {
+      "ic": [
+        "IC003"
+      ],
+      "email": "jane.smith@quality.com"
+    }
+  ],
+  "fileTypes": [
+    {
+      "ic": [
+        "IC002"
+      ],
+      "fileType": "Inspection Checklist"
+    },
+    {
+      "ic": [
+        "IC003"
+      ],
+      "fileType": "Welding Procedure Spec"
+    }
+  ],
+  "verticalsList": [
+    {
+      "ic": [
+        "IC002"
+      ],
+      "verticalName": "Safety"
+    },
+    {
+      "ic": [
+        "IC003"
+      ],
+      "verticalName": "Quality"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+<div class="dashboard">
+
+  <!-- Title bar -->
+  <div class="title-bar">
+    <span class="title-text">E-Doc Approval System</span>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a routerLink="/admin" class="admin-nav-btn" title="Go to Admin Configuration Management">
+        <span>⚙️ Admin Panel</span>
+      </a>
+      <button class="clear-all-btn" type="button" (click)="clearAllFilters()" title="Reset every filter and reload the dashboard">
+        <span class="clear-all-icon">&#8635;</span>
+        <span>Clear All Filters</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters row -->
+  <div class="filters-row">
+    <app-multi-select label="IC" [options]="icOptions" [(selectedValues)]="selectedIcs" (selectedValuesChange)="onFilterChange()" [loading]="filterLoading['ic']" [failed]="filterFailed['ic']" (retry)="fetchFilterList('ic', 'get_ic_list', 'ic')"></app-multi-select>
+    <app-multi-select label="FileTypeName" [options]="filetypeOptions" [(selectedValues)]="selectedFiletypes" (selectedValuesChange)="onFilterChange()" [loading]="filterLoading['filetype']" [failed]="filterFailed['filetype']" (retry)="fetchFilterList('filetype', 'get_filetype_list', 'file_type_name')"></app-multi-select>
+    <app-multi-select label="BU Name" [options]="buOptions" [(selectedValues)]="selectedBus" (selectedValuesChange)="onFilterChange()" [loading]="filterLoading['bu']" [failed]="filterFailed['bu']" (retry)="fetchFilterList('bu', 'get_bu_list', 'bu_name')"></app-multi-select>
+    <app-multi-select label="Job Details" [options]="jobOptions" [(selectedValues)]="selectedJobs" (selectedValuesChange)="onFilterChange()" [loading]="filterLoading['job']" [failed]="filterFailed['job']" (retry)="fetchFilterList('job', 'get_job_list', 'job_details')"></app-multi-select>
+    <app-multi-select label="Approver" [options]="approverOptions" [(selectedValues)]="selectedApprovers" (selectedValuesChange)="onFilterChange()" [loading]="filterLoading['approver']" [failed]="filterFailed['approver']" (retry)="fetchFilterList('approver', 'get_approver_list', 'approver_name')"></app-multi-select>
+  </div>
+
+  <!-- Active Filter Chips -->
+  <div class="active-filters" id="active-filters">
+    <span class="chip" *ngFor="let chip of activeChips">
+      <b>{{ chip.label }}:</b> {{ chip.text }}
+      <span class="chip-x" (click)="clearChip(chip.key)">&#10005;</span>
+    </span>
+  </div>
+
+  <!-- KPI Cards + Gauge chart row -->
+  <div class="kpi-row">
+    <div class="kpi-cards">
+      <!-- Export buttons -->
+      <div class="export-row" style="grid-column: 1 / -1; margin-top: -2px; margin-bottom: 6px; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+        <button class="export-btn" type="button" (click)="doExport('pdf')">Export PDF</button>
+        <button class="export-btn" type="button" (click)="doExport('csv')">Export CSV</button>
+        <button class="export-btn" type="button" (click)="doExport('json')">Export JSON</button>
+      </div>
+      
+      <button class="kpi-card kpi-total" [class.active]="selectedStatus === 'All'" (click)="toggleStatusFilter('All')">
+        <span class="kpi-value">{{ kpiTotal | number:'1.0-0':'en-IN' }}</span>
+        <span class="kpi-label">Total</span>
+      </button>
+      <button class="kpi-card kpi-pending" [class.active]="selectedStatus === 'Pending'" (click)="toggleStatusFilter('Pending')">
+        <span class="kpi-value">{{ kpiPending | number:'1.0-0':'en-IN' }}</span>
+        <span class="kpi-label">Pending</span>
+      </button>
+      <button class="kpi-card kpi-stopped" [class.active]="selectedStatus === 'Stopped'" (click)="toggleStatusFilter('Stopped')">
+        <span class="kpi-value">{{ kpiStopped | number:'1.0-0':'en-IN' }}</span>
+        <span class="kpi-label">Stopped</span>
+      </button>
+      <button class="kpi-card kpi-rejected" [class.active]="selectedStatus === 'Rejected'" (click)="toggleStatusFilter('Rejected')">
+        <span class="kpi-value">{{ kpiRejected | number:'1.0-0':'en-IN' }}</span>
+        <span class="kpi-label">Rejected</span>
+      </button>
+      <button class="kpi-card kpi-approved" [class.active]="selectedStatus === 'Approved'" (click)="toggleStatusFilter('Approved')">
+        <span class="kpi-value">{{ kpiApproved | number:'1.0-0':'en-IN' }}</span>
+        <span class="kpi-label">Approved</span>
+      </button>
+      <button class="kpi-card kpi-paused" [class.active]="selectedStatus === 'Paused'" (click)="toggleStatusFilter('Paused')">
+        <span class="kpi-value">{{ kpiPaused | number:'1.0-0':'en-IN' }}</span>
+        <span class="kpi-label">Paused</span>
+      </button>
+    </div>
+
+    <div class="gauge-card">
+      <div class="gauge-title">Average Days</div>
+      <div class="gauge-wrap">
+        <canvas #gaugeCanvas></canvas>
+        <div class="gauge-value">{{ avgDays | number:'1.2-2' }}</div>
+      </div>
+      <div class="gauge-minmax">
+        <span>{{ minDays | number:'1.2-2' }}</span>
+        <span>{{ maxDays | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">BU Wise Total Count</div>
+      <div class="chart-canvas-wrap"><canvas #buCanvas></canvas></div>
+
+      <div class="chart-table-wrap">
+        <div class="chart-selected-banner" [class.show]="selectedBuName">
+          <span *ngIf="selectedBuName">{{ selectedBuName }} &mdash; {{ selectedBuCount | number:'1.0-0':'en-IN' }} requests</span>
+          <span class="banner-clear" *ngIf="selectedBuName" (click)="clearBuSelection()">&times;</span>
+        </div>
+        <div class="chart-table-search">
+          <input type="text" [(ngModel)]="searchBuTerm" placeholder="Search BU Name&hellip;">
+        </div>
+        <div class="chart-table-header two-col"><span>BU Name</span><span>Count</span></div>
+        <div class="chart-table-body two-col" id="tbl-bu">
+          <div class="chart-table-empty" *ngIf="filteredBuRows.length === 0">No matches</div>
+          <div class="chart-table-row two-col" *ngFor="let r of filteredBuRows" 
+               [class.row-highlight]="selectedBuName === r.bu_name" 
+               [attr.data-name]="r.bu_name"
+               (click)="selectBu(r.bu_name)">
+            <span>{{ r.bu_name }}</span>
+            <span>{{ r.cnt | number:'1.0-0':'en-IN' }}</span>
+          </div>
+        </div>
+        <div class="chart-table-total two-col">
+          <span>Total</span>
+          <span>{{ buRowsTotal | number:'1.0-0':'en-IN' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Request Ageing Days</div>
+      <div class="chart-canvas-wrap"><canvas #ageingCanvas></canvas></div>
+
+      <div class="chart-table-wrap">
+        <div class="chart-selected-banner" [class.show]="selectedAgeingLabel">
+          <span *ngIf="selectedAgeingLabel">{{ selectedAgeingLabel }} &mdash; {{ selectedAgeingCount | number:'1.0-0':'en-IN' }} requests</span>
+          <span class="banner-clear" *ngIf="selectedAgeingLabel" (click)="clearAgeingSelection()">&times;</span>
+        </div>
+        <div class="chart-table-search">
+          <input type="text" [(ngModel)]="searchAgeingTerm" placeholder="Search Ageing Range&hellip;">
+        </div>
+        <div class="chart-table-header two-col"><span>Ageing Range</span><span>Count</span></div>
+        <div class="chart-table-body two-col" id="tbl-ageing">
+          <div class="chart-table-empty" *ngIf="filteredAgeingRows.length === 0">No matches</div>
+          <div class="chart-table-row two-col" *ngFor="let r of filteredAgeingRows" 
+               [class.row-highlight]="selectedAgeingLabel === r.label" 
+               [attr.data-name]="r.label"
+               (click)="selectAgeing(r.label)">
+            <span>{{ r.label }}</span>
+            <span>{{ r.cnt | number:'1.0-0':'en-IN' }}</span>
+          </div>
+        </div>
+        <div class="chart-table-total two-col">
+          <span>Total</span>
+          <span>{{ ageingRowsTotal | number:'1.0-0':'en-IN' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Loading overlay spinner -->
+<div class="admin-loader-overlay" [class.visible]="globalLoading" aria-hidden="true">
+  <div class="admin-loader-container">
+    <div class="admin-loader-logo-wrap">
+      <div class="admin-loader-ring"></div>
+      <svg class="admin-loader-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <polyline points="9 15 11 17 15 13"></polyline>
+      </svg>
+    </div>
+    <div class="admin-loader-text">Loading Dashboard...</div>
+  </div>
+</div>

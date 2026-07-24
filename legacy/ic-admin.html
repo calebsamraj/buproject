@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Doc Approval System - IC Admin</title>
+<link rel="stylesheet" href="Style.css">
+<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="cards.css">
+<link rel="stylesheet" href="forms.css">
+<link rel="stylesheet" href="responsive.css">
+<!-- Supabase client library and credentials -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+</head>
+<body>
+
+<div class="dashboard" style="max-width: 100%; padding: 0;">
+
+  <!-- Header / Title bar -->
+  <div class="title-bar" style="margin-bottom: 0; border-radius: 0;">
+    <span class="title-text">E-Doc Approval System</span>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button class="admin-nav-btn" type="button" id="btn-export-json" title="Download updated admin_data.json file">
+        <span>📥 Export JSON</span>
+      </button>
+      <a href="index.html" class="admin-nav-btn" title="Go to main Dashboard">
+        <span>📊 Dashboard</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <ul class="admin-sidebar-menu">
+        <li class="admin-sidebar-item">
+          <a href="index.html">📊 Dashboard</a>
+        </li>
+        <li class="admin-sidebar-item">
+          <a href="admin.html">🛡️ Super Admin</a>
+        </li>
+        <li class="admin-sidebar-item active">
+          <a href="ic-admin.html">⚙️ IC Admin</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="admin-main">
+      <!-- Breadcrumb -->
+      <nav class="admin-breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Dashboard</a><span>&gt;</span>IC Admin
+      </nav>
+
+      <!-- Page Titles -->
+      <div class="admin-title-row">
+        <h1 class="admin-title">IC Admin Management</h1>
+
+      </div>
+
+      <!-- Horizontal Navigation Menu Cards Grid -->
+      <div class="admin-grid">
+        <button type="button" class="admin-menu-card" id="menu-job" data-target="panel-job">
+          <span class="admin-menu-card-icon">💼</span>
+          <h3 class="admin-menu-card-title">New Job Insert</h3>
+        </button>
+      </div>
+
+      <!-- Main Panel Display -->
+      <div class="admin-form-display">
+        
+        <!-- CARD: New Job Insert Panel (Cloned from Super Admin) -->
+        <section class="admin-card form-card-panel" id="panel-job">
+          <h2 class="admin-card-title">New Job Insert</h2>
+          <hr class="card-divider">
+          <form id="form-job" autocomplete="off" novalidate>
+            
+            <div class="form-group">
+              <label>IC</label>
+              <div class="filter-box multiselect" id="ms-job-ic" data-key="ic">
+                <div class="ms-control">
+                  <button type="button" class="ms-trigger" id="ms-job-ic-trigger">
+                    <span class="ms-trigger-text" id="ms-job-ic-text">Select IC...</span>
+                    <span class="ms-clear" id="ms-job-ic-clear" title="Clear selection">&#10005;</span>
+                    <span class="ms-caret">&#9662;</span>
+                  </button>
+                  <div class="ms-panel" id="ms-job-ic-panel">
+                    <div class="ms-search"><input type="text" id="ms-job-ic-search" placeholder="Search IC..." autocomplete="off"></div>
+                    <label class="ms-selectall"><input type="checkbox" id="ms-job-ic-selectall"><span>Select All</span></label>
+                    <div class="ms-options" id="ms-job-ic-options"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Vertical</label>
+              <div class="filter-box multiselect" id="ms-job-vertical" data-key="vertical">
+                <div class="ms-control">
+                  <button type="button" class="ms-trigger" id="ms-job-vertical-trigger">
+                    <span class="ms-trigger-text" id="ms-job-vertical-text">Select Vertical...</span>
+                    <span class="ms-clear" id="ms-job-vertical-clear" title="Clear selection">&#10005;</span>
+                    <span class="ms-caret">&#9662;</span>
+                  </button>
+                  <div class="ms-panel" id="ms-job-vertical-panel">
+                    <div class="ms-search"><input type="text" id="ms-job-vertical-search" placeholder="Search Vertical..." autocomplete="off"></div>
+                    <label class="ms-selectall"><input type="checkbox" id="ms-job-vertical-selectall"><span>Select All</span></label>
+                    <div class="ms-options" id="ms-job-vertical-options"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="job-code">Job Code</label>
+              <input type="number" id="job-code" class="form-input" placeholder="Enter Job Code" required min="1">
+            </div>
+
+            <div class="form-group">
+              <label for="job-name">Job Name</label>
+              <input type="text" id="job-name" class="form-input" placeholder="Enter Job Name" required>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="btn-primary" id="btn-job-submit">Submit</button>
+              <button type="button" class="btn-danger" id="btn-job-clear">Clear</button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Loading overlay spinner -->
+<div class="admin-loader-overlay" id="admin-loader" aria-hidden="true">
+  <div class="admin-loader-container">
+    <div class="admin-loader-logo-wrap">
+      <div class="admin-loader-ring"></div>
+      <svg class="admin-loader-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <polyline points="9 15 11 17 15 13"></polyline>
+      </svg>
+    </div>
+    <div class="admin-loader-text">Loading Console...</div>
+  </div>
+</div>
+
+<!-- Toast notifications container -->
+<div class="admin-toast-container" id="admin-toast-container" aria-live="polite"></div>
+
+<!-- IC Admin script logic -->
+<script src="ic-admin.js" type="module"></script>
+</body>
+</html>

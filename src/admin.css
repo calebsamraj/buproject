@@ -1,0 +1,278 @@
+/* ============================================================
+   admin.css — Admin Portal Layout, Overlays, and Theme Containers
+   ============================================================ */
+
+.admin-layout {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+
+.admin-sidebar {
+  width: 240px;
+  background: var(--navy-dark);
+  color: #fff;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.admin-sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-sidebar-item a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-sidebar-item a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.admin-sidebar-item.active a {
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
+}
+
+/* Main Content Wrapper */
+.admin-main {
+  flex: 1;
+  padding: 24px 32px 48px;
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+/* Breadcrumb Navigation */
+.admin-breadcrumb {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.admin-breadcrumb a {
+  color: var(--blue);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.admin-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.admin-breadcrumb span {
+  margin: 0 6px;
+  color: #94a3b8;
+}
+
+/* Titles Header block */
+.admin-title-row {
+  margin-bottom: 24px;
+}
+
+.admin-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 0 4px 0;
+}
+
+.admin-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* Base Card Grid */
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+/* Nav Link in Title Bar */
+.admin-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+  transition: background 0.18s ease, transform 0.12s ease;
+  text-decoration: none;
+}
+.admin-nav-btn:hover {
+  background: #1d4ed8;
+}
+.admin-nav-btn:active { transform: scale(0.97); }
+
+/* Full-Screen Loader Overlay */
+.admin-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(11, 63, 102, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.admin-loader-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Centered Container */
+.admin-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+/* Ring + Logo Wrap */
+.admin-loader-logo-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rotating Gradient Ring */
+.admin-loader-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1565c0, #0b3f66, #3b82f6, #06b6d4);
+  animation: rotateRing 1.3s linear infinite;
+  mask: radial-gradient(circle, transparent 65%, black 66%);
+  -webkit-mask: radial-gradient(circle, transparent 65%, black 66%);
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.25);
+}
+
+/* Inner Pulsating SVG Logo Symbol */
+.admin-loader-logo {
+  width: 32px;
+  height: 32px;
+  color: #1565c0;
+  z-index: 2;
+  animation: pulseLogo 1.6s ease-in-out infinite;
+}
+
+/* Loader Label Text */
+.admin-loader-text {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  animation: textFade 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes rotateRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseLogo {
+  0%, 100% { transform: scale(0.95); opacity: 0.85; }
+  50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 6px rgba(21, 101, 192, 0.4)); }
+}
+
+@keyframes textFade {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+/* Toast Container & Alerts */
+.admin-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.admin-toast {
+  min-width: 280px;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 18px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(12px) scale(0.95);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-left: 5px solid var(--blue);
+}
+
+.admin-toast.visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.admin-toast-success {
+  border-left-color: var(--approved);
+}
+
+.admin-toast-error {
+  border-left-color: var(--stopped);
+}
+
+.admin-toast-content {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.admin-toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}

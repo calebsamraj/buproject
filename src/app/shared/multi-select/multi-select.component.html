@@ -1,0 +1,46 @@
+<div class="filter-box multiselect" [class.open]="isOpen" [class.has-selection]="selectedValues.length > 0">
+  <label *ngIf="label">{{ label }}</label>
+  <div class="ms-control">
+    <button type="button" class="ms-trigger" (click)="toggleOpen($event)">
+      <span class="ms-trigger-text">{{ triggerText }}</span>
+      <span class="ms-clear" [class.visible]="selectedValues.length > 0" (click)="clearSelection($event)" title="Clear selection">&#10005;</span>
+      <span class="ms-caret">&#9662;</span>
+    </button>
+    <div class="ms-panel">
+      <!-- Search input -->
+      <div class="ms-search">
+        <input type="text" [(ngModel)]="searchTerm" [placeholder]="placeholder" autocomplete="off">
+      </div>
+
+      <!-- Select All -->
+      <label class="ms-selectall" *ngIf="options.length > 0 && !loading && !failed">
+        <input type="checkbox" [checked]="isAllSelected" [indeterminate]="isIndeterminate" (change)="onSelectAllToggle($event)">
+        <span>Select All</span>
+      </label>
+
+      <!-- Options List -->
+      <div class="ms-options">
+        <!-- Loading state -->
+        <div class="ms-empty ms-loading" *ngIf="loading">Loading options&hellip;</div>
+
+        <!-- Failed state -->
+        <div class="ms-empty ms-retry" *ngIf="failed && !loading" (click)="onRetryClick($event)">
+          Failed to load &mdash; tap to retry
+        </div>
+
+        <!-- Empty state -->
+        <div class="ms-empty" *ngIf="!loading && !failed && filteredOptions.length === 0">
+          {{ emptyText }}
+        </div>
+
+        <!-- Checkboxes -->
+        <ng-container *ngIf="!loading && !failed">
+          <label class="ms-option" *ngFor="let opt of filteredOptions">
+            <input type="checkbox" [checked]="selectedValues.includes(opt)" (change)="onOptionToggle(opt, $event)">
+            <span>{{ opt }}</span>
+          </label>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

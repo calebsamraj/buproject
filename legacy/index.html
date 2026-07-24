@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Doc Approval System</title>
+
+<!-- Chart.js + datalabels plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<!-- jsPDF for PDF export -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<!-- Supabase JS client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="stylesheet" href="Style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- Title bar -->
+  <div class="title-bar">
+    <span class="title-text">E-Doc Approval System</span>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a href="admin.html" class="admin-nav-btn" title="Go to Admin Configuration Management">
+        <span>⚙️ Admin Panel</span>
+      </a>
+      <button class="clear-all-btn" type="button" id="btn-clear-all" title="Reset every filter and reload the dashboard">
+        <span class="clear-all-icon">&#8635;</span>
+        <span>Clear All Filters</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters row -->
+  <div class="filters-row" id="filters-row">
+    <!-- Each filter box below is rendered/populated by initMultiSelects() + loadFilterOptions() in app.js -->
+    <div class="filter-box multiselect" id="ms-ic" data-key="ic">
+      <label>IC</label>
+      <div class="ms-control">
+        <button type="button" class="ms-trigger" id="ms-ic-trigger">
+          <span class="ms-trigger-text" id="ms-ic-text">All</span>
+          <span class="ms-clear" id="ms-ic-clear" title="Clear IC filter">&#10005;</span>
+          <span class="ms-caret">&#9662;</span>
+        </button>
+        <div class="ms-panel" id="ms-ic-panel">
+          <div class="ms-search"><input type="text" id="ms-ic-search" placeholder="Search IC&hellip;" autocomplete="off"></div>
+          <label class="ms-selectall"><input type="checkbox" id="ms-ic-selectall"><span>Select All</span></label>
+          <div class="ms-options" id="ms-ic-options"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-box multiselect" id="ms-filetype" data-key="filetype">
+      <label>FileTypeName</label>
+      <div class="ms-control">
+        <button type="button" class="ms-trigger" id="ms-filetype-trigger">
+          <span class="ms-trigger-text" id="ms-filetype-text">All</span>
+          <span class="ms-clear" id="ms-filetype-clear" title="Clear FileTypeName filter">&#10005;</span>
+          <span class="ms-caret">&#9662;</span>
+        </button>
+        <div class="ms-panel" id="ms-filetype-panel">
+          <div class="ms-search"><input type="text" id="ms-filetype-search" placeholder="Search FileTypeName&hellip;" autocomplete="off"></div>
+          <label class="ms-selectall"><input type="checkbox" id="ms-filetype-selectall"><span>Select All</span></label>
+          <div class="ms-options" id="ms-filetype-options"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-box multiselect" id="ms-bu" data-key="bu">
+      <label>BU Name</label>
+      <div class="ms-control">
+        <button type="button" class="ms-trigger" id="ms-bu-trigger">
+          <span class="ms-trigger-text" id="ms-bu-text">All</span>
+          <span class="ms-clear" id="ms-bu-clear" title="Clear BU Name filter">&#10005;</span>
+          <span class="ms-caret">&#9662;</span>
+        </button>
+        <div class="ms-panel" id="ms-bu-panel">
+          <div class="ms-search"><input type="text" id="ms-bu-search" placeholder="Search BU Name&hellip;" autocomplete="off"></div>
+          <label class="ms-selectall"><input type="checkbox" id="ms-bu-selectall"><span>Select All</span></label>
+          <div class="ms-options" id="ms-bu-options"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-box multiselect" id="ms-job" data-key="job">
+      <label>Job Details</label>
+      <div class="ms-control">
+        <button type="button" class="ms-trigger" id="ms-job-trigger">
+          <span class="ms-trigger-text" id="ms-job-text">All</span>
+          <span class="ms-clear" id="ms-job-clear" title="Clear Job Details filter">&#10005;</span>
+          <span class="ms-caret">&#9662;</span>
+        </button>
+        <div class="ms-panel" id="ms-job-panel">
+          <div class="ms-search"><input type="text" id="ms-job-search" placeholder="Search Job Details&hellip;" autocomplete="off"></div>
+          <label class="ms-selectall"><input type="checkbox" id="ms-job-selectall"><span>Select All</span></label>
+          <div class="ms-options" id="ms-job-options"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-box multiselect" id="ms-approver" data-key="approver">
+      <label>Approver</label>
+      <div class="ms-control">
+        <button type="button" class="ms-trigger" id="ms-approver-trigger">
+          <span class="ms-trigger-text" id="ms-approver-text">All</span>
+          <span class="ms-clear" id="ms-approver-clear" title="Clear Approver filter">&#10005;</span>
+          <span class="ms-caret">&#9662;</span>
+        </button>
+        <div class="ms-panel" id="ms-approver-panel">
+          <div class="ms-search"><input type="text" id="ms-approver-search" placeholder="Search Approver&hellip;" autocomplete="off"></div>
+          <label class="ms-selectall"><input type="checkbox" id="ms-approver-selectall"><span>Select All</span></label>
+          <div class="ms-options" id="ms-approver-options"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- active filter chips -->
+  <div class="active-filters" id="active-filters"></div>
+
+  <!-- KPI + Gauge row -->
+  <div class="kpi-row">
+    <div class="kpi-cards">
+      <!-- Export buttons -->
+      <div class="export-row" style="grid-column: 1 / -1; margin-top: -2px; margin-bottom: 6px; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;">
+        <button class="export-btn" type="button" id="btn-export-pdf">Export PDF</button>
+        <button class="export-btn" type="button" id="btn-export-csv">Export CSV</button>
+        <button class="export-btn" type="button" id="btn-export-json">Export JSON</button>
+      </div>
+      <button class="kpi-card kpi-total"    data-status="All">
+        <span class="kpi-value" id="kpi-total">0</span>
+        <span class="kpi-label">Total</span>
+      </button>
+      <button class="kpi-card kpi-pending"  data-status="Pending">
+        <span class="kpi-value" id="kpi-pending">0</span>
+        <span class="kpi-label">Pending</span>
+      </button>
+      <button class="kpi-card kpi-stopped"  data-status="Stopped">
+        <span class="kpi-value" id="kpi-stopped">0</span>
+        <span class="kpi-label">Stopped</span>
+      </button>
+      <button class="kpi-card kpi-rejected" data-status="Rejected">
+        <span class="kpi-value" id="kpi-rejected">0</span>
+        <span class="kpi-label">Rejected</span>
+      </button>
+      <button class="kpi-card kpi-approved" data-status="Approved">
+        <span class="kpi-value" id="kpi-approved">0</span>
+        <span class="kpi-label">Approved</span>
+      </button>
+      <button class="kpi-card kpi-paused"   data-status="Paused">
+        <span class="kpi-value" id="kpi-paused">0</span>
+        <span class="kpi-label">Paused</span>
+      </button>
+    </div>
+
+    <div class="gauge-card">
+      <div class="gauge-title">Average Days</div>
+      <div class="gauge-wrap">
+        <canvas id="gaugeChart"></canvas>
+        <div class="gauge-value" id="gauge-value">0.00</div>
+      </div>
+      <div class="gauge-minmax">
+        <span id="gauge-min">0.00</span>
+        <span id="gauge-max">0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">BU Wise Total Count</div>
+      <div class="chart-canvas-wrap"><canvas id="buChart"></canvas></div>
+
+      <div class="chart-table-wrap">
+        <div class="chart-selected-banner" id="bu-selected-banner"></div>
+        <div class="chart-table-search">
+          <input type="text" id="search-bu" placeholder="Search BU Name&hellip;">
+        </div>
+        <div class="chart-table-header two-col"><span>BU Name</span><span>Count</span></div>
+        <div class="chart-table-body two-col" id="tbl-bu"></div>
+        <div class="chart-table-total two-col" id="tbl-bu-total"></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Request Ageing Days</div>
+      <div class="chart-canvas-wrap"><canvas id="ageingChart"></canvas></div>
+
+      <div class="chart-table-wrap">
+        <div class="chart-selected-banner" id="ageing-selected-banner"></div>
+        <div class="chart-table-search">
+          <input type="text" id="search-ageing" placeholder="Search Ageing Range&hellip;">
+        </div>
+        <div class="chart-table-header two-col"><span>Ageing Range</span><span>Count</span></div>
+        <div class="chart-table-body two-col" id="tbl-ageing"></div>
+        <div class="chart-table-total two-col" id="tbl-ageing-total"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Loading overlay spinner -->
+<div class="admin-loader-overlay" id="admin-loader" aria-hidden="true">
+  <div class="admin-loader-container">
+    <div class="admin-loader-logo-wrap">
+      <div class="admin-loader-ring"></div>
+      <svg class="admin-loader-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <polyline points="9 15 11 17 15 13"></polyline>
+      </svg>
+    </div>
+    <div class="admin-loader-text">Loading Dashboard...</div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

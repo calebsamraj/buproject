@@ -1,0 +1,184 @@
+<div class="dashboard" style="max-width: 100%; padding: 0; min-height: 100vh; display: flex; flex-direction: column;">
+
+  <!-- Header / Title bar -->
+  <div class="title-bar" style="margin-bottom: 0; border-radius: 0; flex-shrink: 0;">
+    <span class="title-text">E-Doc Approval System</span>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button class="admin-nav-btn" type="button" (click)="exportJson()" title="Download updated admin_data.json file">
+        <span>📥 Export JSON</span>
+      </button>
+      <a routerLink="/dashboard" class="admin-nav-btn" title="Go to main Dashboard">
+        <span>📊 Dashboard</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="admin-layout" style="flex: 1; display: flex; overflow: hidden;">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <ul class="admin-sidebar-menu">
+        <li class="admin-sidebar-item">
+          <a routerLink="/dashboard">📊 Dashboard</a>
+        </li>
+        <li class="admin-sidebar-item active">
+          <a routerLink="/admin">🛡️ Super Admin</a>
+        </li>
+        <li class="admin-sidebar-item">
+          <a routerLink="/ic-admin">⚙️ IC Admin</a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="admin-main" style="flex: 1; overflow-y: auto; padding: 20px;">
+      <!-- Breadcrumb -->
+      <nav class="admin-breadcrumb" aria-label="Breadcrumb">
+        <a routerLink="/dashboard">Dashboard</a><span>&gt;</span>Super Admin
+      </nav>
+
+      <!-- Page Titles -->
+      <div class="admin-title-row">
+        <h1 class="admin-title">Super Admin Configuration</h1>
+      </div>
+
+      <!-- Horizontal Navigation Menu Cards Grid -->
+      <div class="admin-grid">
+        <button type="button" class="admin-menu-card" [class.active]="activeTab === 'job'" (click)="selectTab('job')">
+          <span class="admin-menu-card-icon">💼</span>
+          <h3 class="admin-menu-card-title">New Job Insert</h3>
+        </button>
+        <button type="button" class="admin-menu-card" [class.active]="activeTab === 'user'" (click)="selectTab('user')">
+          <span class="admin-menu-card-icon">👤</span>
+          <h3 class="admin-menu-card-title">User Config</h3>
+        </button>
+        <button type="button" class="admin-menu-card" [class.active]="activeTab === 'filetype'" (click)="selectTab('filetype')">
+          <span class="admin-menu-card-icon">📄</span>
+          <h3 class="admin-menu-card-title">File Type Config</h3>
+        </button>
+        <button type="button" class="admin-menu-card" [class.active]="activeTab === 'vertical'" (click)="selectTab('vertical')">
+          <span class="admin-menu-card-icon">🏢</span>
+          <h3 class="admin-menu-card-title">Vertical Config</h3>
+        </button>
+      </div>
+
+      <!-- Main Panel Display -->
+      <div class="admin-form-display">
+        
+        <!-- CARD: New Job Insert Panel -->
+        <section class="admin-card form-card-panel" [class.visible]="activeTab === 'job'">
+          <h2 class="admin-card-title">New Job Insert</h2>
+          <hr class="card-divider">
+          <form (keydown.enter)="$event.preventDefault(); submitJob()" autocomplete="off" novalidate>
+            <div class="form-group">
+              <app-multi-select label="IC" [options]="icOptions" [(selectedValues)]="jobIc" placeholder="Select IC..."></app-multi-select>
+            </div>
+
+            <div class="form-group">
+              <app-multi-select label="Vertical" [options]="verticalOptions" [(selectedValues)]="jobVertical" placeholder="Select Vertical..."></app-multi-select>
+            </div>
+
+            <div class="form-group">
+              <label for="job-code">Job Code</label>
+              <input type="number" id="job-code" name="jobCode" [(ngModel)]="jobCode" class="form-input" placeholder="Enter Job Code" required min="1">
+            </div>
+
+            <div class="form-group">
+              <label for="job-name">Job Name</label>
+              <input type="text" id="job-name" name="jobName" [(ngModel)]="jobName" class="form-input" placeholder="Enter Job Name" required>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="btn-primary" (click)="submitJob()">Submit</button>
+              <button type="button" class="btn-danger" (click)="clearJob()">Clear</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- CARD: User Config Panel -->
+        <section class="admin-card form-card-panel" [class.visible]="activeTab === 'user'">
+          <h2 class="admin-card-title">User Config</h2>
+          <hr class="card-divider">
+          <form (keydown.enter)="$event.preventDefault(); submitUser()" autocomplete="off" novalidate>
+            <div class="form-group">
+              <app-multi-select label="IC" [options]="icOptions" [(selectedValues)]="userIc" placeholder="Select IC..."></app-multi-select>
+            </div>
+
+            <div class="form-group">
+              <label for="user-email">User Email</label>
+              <input type="email" id="user-email" name="userEmail" [(ngModel)]="userEmail" class="form-input" placeholder="Enter Email Address" required>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="btn-primary" (click)="submitUser()">Submit</button>
+              <button type="button" class="btn-danger" (click)="clearUser()">Clear</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- CARD: File Type Config Panel -->
+        <section class="admin-card form-card-panel" [class.visible]="activeTab === 'filetype'">
+          <h2 class="admin-card-title">File Type Config</h2>
+          <hr class="card-divider">
+          <form (keydown.enter)="$event.preventDefault(); submitFileType()" autocomplete="off" novalidate>
+            <div class="form-group">
+              <app-multi-select label="IC" [options]="icOptions" [(selectedValues)]="filetypeIc" placeholder="Select IC..."></app-multi-select>
+            </div>
+
+            <div class="form-group">
+              <label for="file-type">File Type Name</label>
+              <input type="text" id="file-type" name="filetypeName" [(ngModel)]="filetypeName" class="form-input" placeholder="Enter File Type name" required>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="btn-primary" (click)="submitFileType()">Submit</button>
+              <button type="button" class="btn-danger" (click)="clearFileType()">Clear</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- CARD: Vertical Config Panel -->
+        <section class="admin-card form-card-panel" [class.visible]="activeTab === 'vertical'">
+          <h2 class="admin-card-title">Vertical Config</h2>
+          <hr class="card-divider">
+          <form (keydown.enter)="$event.preventDefault(); submitVertical()" autocomplete="off" novalidate>
+            <div class="form-group">
+              <app-multi-select label="IC" [options]="icOptions" [(selectedValues)]="verticalIc" placeholder="Select IC..."></app-multi-select>
+            </div>
+
+            <div class="form-group">
+              <label for="vertical-name">Vertical Name</label>
+              <input type="text" id="vertical-name" name="verticalName" [(ngModel)]="verticalName" class="form-input" placeholder="Enter Vertical Name" required>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="btn-primary" (click)="submitVertical()">Submit</button>
+              <button type="button" class="btn-danger" (click)="clearVertical()">Clear</button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Loading overlay spinner -->
+<div class="admin-loader-overlay" [class.visible]="globalLoading" aria-hidden="true">
+  <div class="admin-loader-container">
+    <div class="admin-loader-ring"></div>
+    <svg class="admin-loader-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <polyline points="9 15 11 17 15 13"></polyline>
+    </svg>
+    <div class="admin-loader-text">Loading Console...</div>
+  </div>
+</div>
+
+<!-- Toast notifications container -->
+<div class="admin-toast-container" aria-live="polite">
+  <div *ngFor="let t of toasts" class="admin-toast admin-toast-{{ t.type }} visible">
+    <span class="admin-toast-icon">{{ t.type === 'success' ? '✓' : '⚠' }}</span>
+    <span class="admin-toast-content">{{ t.message }}</span>
+  </div>
+</div>

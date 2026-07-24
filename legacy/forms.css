@@ -1,0 +1,146 @@
+/* ============================================================
+   forms.css — Form Inputs, Buttons, & Controls Styling
+   ============================================================ */
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group > label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-left: 2px;
+}
+
+.form-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Button & Action Container layouts */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(21, 101, 192, 0.3);
+  transition: background 0.15s ease, transform 0.1s ease;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+.btn-primary:hover { background: var(--navy-dark); }
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary:disabled {
+  background: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: var(--ink);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+.btn-secondary:hover { background: #cbd5e1; }
+.btn-secondary:active { transform: scale(0.97); }
+.btn-secondary:disabled {
+  background: #f1f5f9;
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: var(--stopped);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(192, 57, 43, 0.3);
+  transition: background 0.15s ease, transform 0.1s ease;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+.btn-danger:hover { background: var(--rejected); }
+.btn-danger:active { transform: scale(0.97); }
+.btn-danger:disabled {
+  background: #f1f5f9;
+  color: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Custom Overrides for Dropdowns in Forms */
+.form-group .filter-box {
+  width: 100%;
+}
+.form-group .ms-trigger {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.form-group .ms-trigger:hover {
+  border-color: #b9c4d3;
+}
+.form-group .multiselect.open .ms-trigger {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+.form-group .filter-box.multiselect.has-selection .ms-trigger {
+  border-color: var(--accent);
+  background: var(--blue-light);
+}

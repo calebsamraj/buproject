@@ -1,0 +1,5 @@
+/* Global application CSS overrides */
+a {
+  text-decoration: none;
+  color: inherit;
+}

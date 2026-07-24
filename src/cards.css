@@ -1,0 +1,145 @@
+/* ============================================================
+   cards.css — Card Component Presentation & Animations
+   ============================================================ */
+
+/* Center the form cards and keep them small size with subtle blue gradient */
+.admin-card {
+  background: linear-gradient(135deg, #ffffff 65%, #f2f7fd 100%);
+  border: 1px solid rgba(21, 101, 192, 0.12); /* Soft blue border outline */
+  border-top: 4px solid var(--blue); /* Professional top highlight border */
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(11, 63, 102, 0.05); /* Premium soft drop shadow */
+  padding: 28px 36px;     /* Professional padding space */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  max-width: 640px;       /* Wider layout profile */
+  width: 100%;
+  margin: 0 auto;         /* Centered horizontally */
+}
+
+.admin-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--blue);
+  margin: 0;
+}
+
+.card-divider {
+  height: 1.5px;
+  background-color: var(--border);
+  margin: 14px 0 18px 0;
+  border: none;
+}
+
+/* Menu Cards Grid Buttons: Centered, Small, and all in one line */
+.admin-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  max-width: 900px;
+  margin: 0 auto 20px auto;
+  width: 100%;
+  flex-wrap: nowrap; /* Forces them in a single line */
+  overflow-x: auto;  /* Allows touch scrolling on mobile instead of breaking line */
+  padding: 4px;
+}
+
+/* Hide scrollbar for admin-grid on Chrome, Safari and Opera */
+.admin-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.admin-grid {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.admin-menu-card {
+  background: linear-gradient(135deg, #ffffff, #f8faff);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;          /* Small size */
+  display: flex;
+  align-items: center;         /* Horizontal inline icon & text */
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  flex: 1;                     /* Equal width distribution */
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.admin-menu-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: #b9c4d3;
+  background: linear-gradient(135deg, #f1f7fe, #e3effd);
+}
+
+.admin-menu-card.active {
+  outline: 3px solid rgba(21, 101, 192, 0.4);
+  outline-offset: 2px;
+  border-color: var(--navy-dark);
+  background: linear-gradient(135deg, var(--blue), var(--navy));
+}
+
+.admin-menu-card-icon {
+  font-size: 18px;             /* Smaller icon size */
+  line-height: 1;
+}
+
+.admin-menu-card-title {
+  font-size: 12px;             /* Smaller title size */
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Force icons and titles to turn clean white inside active blue-gradient cards */
+.admin-menu-card.active .admin-menu-card-title {
+  color: #ffffff;
+}
+
+.admin-menu-card.active .admin-menu-card-icon {
+  color: #ffffff;
+}
+
+/* Panel Containers Toggled below Grid */
+.admin-form-display {
+  margin-top: 28px;
+  width: 100%;
+}
+
+.form-card-panel {
+  display: none;
+  animation: formFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.form-card-panel.visible {
+  display: flex;
+}
+
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
